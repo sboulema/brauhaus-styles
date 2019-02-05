@@ -27,27 +27,27 @@ task 'build', 'Build lib from src', ->
 
         do (key, files) ->
             console.log "Checking code quality for lib/#{key}.js"
-            run "./node_modules/coffeelint/bin/coffeelint -f test/lint.json #{files}", ->
+            run "node ./node_modules/coffeelint/bin/coffeelint -f test/lint.json #{files}", ->
                 console.log "Building lib/#{key}.js"
 
-                run "./node_modules/coffee-script/bin/coffee -j lib/#{key}.js --compile #{files}", ->
+                run "node ./node_modules/coffee-script/bin/coffee -j lib/#{key}.js --compile #{files}", ->
                     console.log "Building lib/#{key}.min.js"
-                    run "./node_modules/uglify-js/bin/uglifyjs --comments -o dist/#{key}.min.js lib/#{key}.js"
+                    run "node ./node_modules/uglify-js/bin/uglifyjs --comments -o dist/#{key}.min.js lib/#{key}.js"
 
-    run './node_modules/coffee-script/bin/coffee --compile --bare test'
+    run 'node ./node_modules/coffee-script/bin/coffee --compile --bare test'
 
 task 'test', 'Run library tests', ->
-    run './node_modules/mocha/bin/mocha --compilers coffee:coffee-script -R spec --colors test/*.coffee', ->
+    run 'node ./node_modules/mocha/bin/mocha --compilers coffee:coffee-script -R spec --colors test/*.coffee', ->
         # Run headless web browser tests on continuous integration hosts
         if process.env.CI
-            run './node_modules/mocha-phantomjs/bin/mocha-phantomjs test/test.html'
+            run 'node ./node_modules/mocha-phantomjs/bin/mocha-phantomjs test/test.html'
 
 task 'updateCoverage', 'Generate and push unit test code coverage info to coveralls.io', ->
-    run './node_modules/istanbul/lib/cli.js cover -v ./node_modules/mocha/bin/_mocha -- test/*.js', ->
-        run './node_modules/istanbul/lib/cli.js report lcovonly', ->
+    run 'node ./node_modules/istanbul/lib/cli.js cover -v ./node_modules/mocha/bin/_mocha -- test/*.js', ->
+        run 'node ./node_modules/istanbul/lib/cli.js report lcovonly', ->
             console.log 'Trying to send coverage information to coveralls...'
-            run './node_modules/coveralls/bin/coveralls.js <coverage/lcov.info'
+            run 'node ./node_modules/coveralls/bin/coveralls.js <coverage/lcov.info'
 
 task 'coverage', 'Determine unit test code coverage', ->
-    run './node_modules/istanbul/lib/cli.js cover -v ./node_modules/mocha/bin/_mocha -- test/*.js', ->
-        run './node_modules/istanbul/lib/cli.js report html'
+    run 'node ./node_modules/istanbul/lib/cli.js cover -v ./node_modules/mocha/bin/_mocha -- test/*.js', ->
+        run 'node ./node_modules/istanbul/lib/cli.js report html'
